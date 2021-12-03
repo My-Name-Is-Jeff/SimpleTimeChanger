@@ -23,7 +23,7 @@ import net.minecraftforge.gradle.user.TaskSingleReobf
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.5.21"
+    kotlin("jvm") version "1.6.0"
     id("net.minecraftforge.gradle.forge") version "6f5327"
     id("com.github.johnrengelman.shadow") version "6.1.0"
     id("org.spongepowered.mixin") version "d5f9873d60"
@@ -39,31 +39,24 @@ minecraft {
     mappings = "stable_22"
     makeObfSourceJar = false
     isGitVersion = false
-    clientJvmArgs.addAll(
-            setOf(
-                    "-Delementa.dev=true",
-                    "-Delementa.debug=true"
-            )
+    clientJvmArgs + arrayOf(
+        "-Delementa.dev=true",
+        "-Delementa.debug=true",
+        "-Dasmhelper.verbose=true"
     )
-    clientRunArgs.addAll(
-            setOf(
-                    "--tweakClass gg.essential.loader.stage0.EssentialSetupTweaker",
-                    "--mixin mixins.simpletimechanger.json"
-            )
+    clientRunArgs + arrayOf(
+        "--tweakClass gg.essential.loader.stage0.EssentialSetupTweaker",
+        "--mixin mixins.simpletimechanger.json"
     )
 }
 
 repositories {
     mavenLocal()
     mavenCentral()
-    setOf(
-            "https://repo.spongepowered.org/repository/maven-public/",
-            "https://repo.sk1er.club/repository/maven-public/",
-            "https://repo.sk1er.club/repository/maven-releases/",
-            "https://jitpack.io"
-    ).forEach {
-        maven(it)
-    }
+    maven("https://repo.spongepowered.org/repository/maven-public/")
+    maven("https://repo.sk1er.club/repository/maven-public/")
+    maven("https://repo.sk1er.club/repository/maven-releases/")
+    maven("https://jitpack.io")
 }
 
 val shadowMe: Configuration by configurations.creating {
@@ -72,9 +65,15 @@ val shadowMe: Configuration by configurations.creating {
 
 dependencies {
     annotationProcessor("org.spongepowered:mixin:0.7.11-SNAPSHOT")
+    implementation("org.spongepowered:mixin:0.7.11-SNAPSHOT")
 
-    shadowMe("gg.essential:loader-launchwrapper:1.1.0")
-    implementation("gg.essential:essential-1.8.9-forge:1282")
+    shadowMe("gg.essential:loader-launchwrapper:1.1.2")
+    implementation("gg.essential:essential-1.8.9-forge:1579") {
+        exclude(module = "asm")
+        exclude(module = "asm-commons")
+        exclude(module = "asm-tree")
+        exclude(module = "gson")
+    }
 }
 
 mixin {
@@ -103,14 +102,14 @@ tasks {
         archiveBaseName.set("simpletimechanger")
         manifest {
             attributes(
-                    mapOf(
-                            "FMLCorePluginContainsFMLMod" to true,
-                            "ForceLoadAsMod" to true,
-                            "MixinConfigs" to "mixins.simpletimechanger.json",
-                            "ModSide" to "CLIENT",
-                            "TweakClass" to "gg.essential.loader.stage0.EssentialSetupTweaker",
-                            "TweakOrder" to "0"
-                    )
+                mapOf(
+                    "FMLCorePluginContainsFMLMod" to true,
+                    "ForceLoadAsMod" to true,
+                    "MixinConfigs" to "mixins.simpletimechanger.json",
+                    "ModSide" to "CLIENT",
+                    "TweakClass" to "gg.essential.loader.stage0.EssentialSetupTweaker",
+                    "TweakOrder" to "0"
+                )
             )
         }
         enabled = false
@@ -121,19 +120,19 @@ tasks {
         configurations = listOf(shadowMe)
 
         exclude(
-                "**/LICENSE.md",
-                "**/LICENSE.txt",
-                "**/LICENSE",
-                "**/NOTICE",
-                "**/NOTICE.txt",
-                "pack.mcmeta",
-                "dummyThing",
-                "**/module-info.class",
-                "META-INF/proguard/**",
-                "META-INF/maven/**",
-                "META-INF/versions/**",
-                "META-INF/com.android.tools/**",
-                "fabric.mod.json"
+            "**/LICENSE.md",
+            "**/LICENSE.txt",
+            "**/LICENSE",
+            "**/NOTICE",
+            "**/NOTICE.txt",
+            "pack.mcmeta",
+            "dummyThing",
+            "**/module-info.class",
+            "META-INF/proguard/**",
+            "META-INF/maven/**",
+            "META-INF/versions/**",
+            "META-INF/com.android.tools/**",
+            "fabric.mod.json"
         )
         mergeServiceFiles()
     }
