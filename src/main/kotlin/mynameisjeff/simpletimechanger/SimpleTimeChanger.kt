@@ -43,7 +43,7 @@ object SimpleTimeChanger {
 
     const val MODID = "simpletimechanger"
     const val MOD_NAME = "SimpleTimeChanger"
-    const val VERSION = "1.0.0"
+    const val VERSION = "1.0.1"
     val mc: MCMinecraft
         get() =  UMinecraft.getMinecraft()
 

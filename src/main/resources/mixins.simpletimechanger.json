@@ -4,6 +4,7 @@
   "refmap": "mixins.simpletimechanger.refmap.json",
   "plugin": "mynameisjeff.simpletimechanger.mixins.MixinPlugin",
   "mixins": [
+    "MixinCustomSky",
     "MixinWorld"
   ],
   "verbose": true
