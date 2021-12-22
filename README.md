@@ -4,9 +4,9 @@ Basic time changer mod for Minecraft Forge 1.8.9 that doesn't suck
 
 ## Difference: 
 
-Disables on Singleplayer (messes up mob spawning)
-
+Doesn't mess up Singleplayer (hopefully)
 Doesn't overwrite the getTime method (messes up other mods and debug info)
+Doesn't replace the entire NetHandler
 
 ## Features:
 

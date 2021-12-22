@@ -43,12 +43,12 @@ object SimpleTimeChanger {
 
     const val MODID = "simpletimechanger"
     const val MOD_NAME = "SimpleTimeChanger"
-    const val VERSION = "1.0.1"
+    const val VERSION = "1.0.2"
     val mc: MCMinecraft
         get() =  UMinecraft.getMinecraft()
 
     val isEnabled
-        get() = Config.isEnabled && !mc.isSingleplayer
+        get() = Config.isEnabled
     val worldTime: Int
         get() {
             return if (!Config.useIrlTime) Config.worldTime else {

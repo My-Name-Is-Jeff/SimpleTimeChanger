@@ -23,14 +23,14 @@ import net.minecraftforge.gradle.user.TaskSingleReobf
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.6.0"
+    kotlin("jvm") version "1.6.10"
     id("net.minecraftforge.gradle.forge") version "6f5327"
     id("com.github.johnrengelman.shadow") version "6.1.0"
     id("org.spongepowered.mixin") version "d5f9873d60"
     java
 }
 
-version = "1.0.1"
+version = "1.0.2"
 group = "mynameisjeff.simpletimechanger"
 
 minecraft {
@@ -67,13 +67,8 @@ dependencies {
     annotationProcessor("org.spongepowered:mixin:0.7.11-SNAPSHOT")
     implementation("org.spongepowered:mixin:0.7.11-SNAPSHOT")
 
-    shadowMe("gg.essential:loader-launchwrapper:1.1.2")
-    implementation("gg.essential:essential-1.8.9-forge:1579") {
-        exclude(module = "asm")
-        exclude(module = "asm-commons")
-        exclude(module = "asm-tree")
-        exclude(module = "gson")
-    }
+    shadowMe("gg.essential:loader-launchwrapper:1.1.3")
+    implementation("gg.essential:essential-1.8.9-forge:1664")
 }
 
 mixin {
@@ -86,6 +81,14 @@ sourceSets {
     main {
         ext["refmap"] = "mixins.simpletimechanger.refmap.json"
         output.setResourcesDir(file("${buildDir}/classes/kotlin/main"))
+    }
+}
+
+configure<NamedDomainObjectContainer<IReobfuscator>> {
+    clear()
+    create("shadowJar") {
+        mappingType = SEARGE
+        classpath = sourceSets.main.get().compileClasspath
     }
 }
 
@@ -144,16 +147,13 @@ tasks {
             jvmTarget = "1.8"
             freeCompilerArgs = listOf("-Xopt-in=kotlin.RequiresOptIn")
         }
+        kotlinDaemonJvmArguments.set(listOf("-Xmx4G", "-Dkotlin.enableCacheBuilding=true", "-Dkotlin.useParallelTasks=true", "-Dkotlin.enableFastIncremental=true"))
     }
     named<TaskSingleReobf>("reobfJar") {
-        dependsOn(shadowJar)
+        enabled = false
     }
-}
-
-configure<NamedDomainObjectContainer<IReobfuscator>> {
-    create("shadowJar") {
-        mappingType = SEARGE
-        classpath = sourceSets.main.get().compileClasspath
+    named<TaskSingleReobf>("reobfShadowJar") {
+        mustRunAfter(shadowJar)
     }
 }
 

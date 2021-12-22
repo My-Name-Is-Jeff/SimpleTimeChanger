@@ -2,7 +2,6 @@
   "compatibilityLevel": "JAVA_8",
   "package": "mynameisjeff.simpletimechanger.mixins.transformers",
   "refmap": "mixins.simpletimechanger.refmap.json",
-  "plugin": "mynameisjeff.simpletimechanger.mixins.MixinPlugin",
   "mixins": [
     "MixinCustomSky",
     "MixinWorld"
